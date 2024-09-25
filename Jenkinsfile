@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:20.17.0-alpine3.20' }
+    }
 
     environment {
         AWS_DEFAULT_REGION = 'ap-southeast-2'
