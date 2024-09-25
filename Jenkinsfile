@@ -17,11 +17,11 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
+        //     }
+        // }
 
         stage ('Stop previous running container'){
             steps{
