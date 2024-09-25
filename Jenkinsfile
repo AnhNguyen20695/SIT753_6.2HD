@@ -1,19 +1,23 @@
 pipeline {
     environment {
-        registry = ""
-        registryCredential = ''
-        dockerImage = ''
+        AWS_DEFAULT_REGION = 'ap-southeast-2'
+        AWS_ACCOUNT_ID = '277707121057'
+        ECR_REPOSITORY = '277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753'
+        IMAGE_TAG = "latest" // Or use a dynamic tag based on build number or git commit
+        EB_APPLICATION_NAME = 'sit753-s222521972-server'
+        EB_ENVIRONMENT_NAME = 'sit753-s222521972-server-env'
+        S3_BUCKET = 'elasticbeanstalk-ap-southeast-2-277707121057'
     }
     options {
         skipStagesAfterUnstable()
     }
 
     stages {
-        // stage('Checkout') {
-        //     steps {
-        //         git 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
-        //     }
-        // }
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
+            }
+        }
 
         stage ('Stop previous running container'){
             steps{
@@ -26,9 +30,7 @@ pipeline {
 	    stage('Build') {
             steps {
                 script {
-                    img = registry + ":${env.BUILD_ID}"
-                    println ("${img}")
-                    dockerImage = docker.build("${img}")
+                    app = docker.build("${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}")
                 }
             }
         }
@@ -36,7 +38,8 @@ pipeline {
         stage('Test') {
            steps {
 
-                sh label: '', script: "docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}"
+                // sh label: '', script: "docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}"
+                echo "Test with Selenium..."
           }
         }
 
@@ -47,12 +50,33 @@ pipeline {
           }
         }
 
-        stage('Deploy') {
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry( '277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753', 'ecr:ap-southeast-2:aws-credentials' ) {
+        //                 dockerImage.push("${env.BUILD_NUMBER}")
+        //                 dockerImage.push("latest")
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Deploy - Push to ECR') {
             steps {
                 script {
-                    docker.withRegistry( '277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753', 'ecr:ap-southeast-2:aws-credentials' ) {
-                        dockerImage.push("${env.BUILD_NUMBER}")
-                        dockerImage.push("latest")
+                    // Push to AWS ECR
+                    docker.withRegistry("${ECR_REPOSITORY}", "ecr:${AWS_DEFAULT_REGION}:aws-credentials") {
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
+
+                    // Deploy to AWS Elastic Beanstalk
+                    sh "zip -r deployment-package.zip Docker.aws.json"
+                    
+                    
+                    // Create a new application version and update the environment
+                    withAWS(credentials: 'aws-jenkins', region: "${AWS_DEFAULT_REGION}") {
+                        sh "aws s3 cp deployment-package.zip s3://${S3_BUCKET}/${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
+                        sh "aws elasticbeanstalk create-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket=${S3_BUCKET},S3Key=${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
+                        sh "aws elasticbeanstalk update-environment --application-name ${EB_APPLICATION_NAME} --environment-name ${EB_ENVIRONMENT_NAME} --version-label ${IMAGE_TAG}"
                     }
                 }
             }
