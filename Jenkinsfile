@@ -13,11 +13,11 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
+        //     }
+        // }
 
         stage ('Stop previous running container'){
             steps{
@@ -73,7 +73,7 @@ pipeline {
                     
                     
                     // Create a new application version and update the environment
-                    withAWS(credentials: 'aws-jenkins', region: "${AWS_DEFAULT_REGION}") {
+                    withAWS(credentials: 'AWS ECR Credentials for SIT753 (s222521972)', region: "${AWS_DEFAULT_REGION}") {
                         sh "aws s3 cp deployment-package.zip s3://${S3_BUCKET}/${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
                         sh "aws elasticbeanstalk create-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket=${S3_BUCKET},S3Key=${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
                         sh "aws elasticbeanstalk update-environment --application-name ${EB_APPLICATION_NAME} --environment-name ${EB_ENVIRONMENT_NAME} --version-label ${IMAGE_TAG}"
