@@ -19,7 +19,7 @@ pipeline{
         }
         stage('Security Scan'){
             steps{
-                echo "Scanning for security vulnerabilities in code, using Codesonar..."
+                echo "Scanning for security vulnerabilities in code, using Codesonar.."
             }
         }
         stage('Deploy'){
