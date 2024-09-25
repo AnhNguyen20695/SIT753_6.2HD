@@ -1,0 +1,12 @@
+{
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+        "Name": "277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753",
+        "Update": "true"
+    },
+    "Ports": [
+        {
+            "ContainerPort": "8080"
+        }
+    ]
+}
