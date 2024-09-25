@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'node:20.17.0-alpine3.20' }
-    }
+    agent any
 
     environment {
         AWS_DEFAULT_REGION = 'ap-southeast-2'
@@ -17,11 +15,11 @@ pipeline {
     }
 
     stages {
-        // stage('Checkout') {
-        //     steps {
-        //         git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
-        //     }
-        // }
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
+            }
+        }
 
         stage ('Stop previous running container'){
             steps{
