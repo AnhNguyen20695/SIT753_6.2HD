@@ -43,13 +43,17 @@ pipeline {
                 sh label: '', script: "docker run -d -p 5000:5000 sit753"
                 echo "Test with Pytest..."
                 sh label: '', script: "pytest pytest/app-tests/test_request.py"
+                sh label: '', script: "docker stop $(docker ps -a -q)"
+                sh label: '', script: "docker rm $(docker ps -a -q)"
           }
         }
 
         stage('Code Quality Analysis') {
            steps {
-
                 echo "Code Quality with SonarQube..."
+                withSonarQubeEnv(installationName: 'sit753-sonar') {
+                    sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
+                }
           }
         }
 
