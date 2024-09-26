@@ -40,8 +40,9 @@ pipeline {
         stage('Test') {
            steps {
 
-                // sh label: '', script: "docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}"
-                echo "Test with Selenium..."
+                sh label: '', script: "docker run -d -p 5000:5000 sit753"
+                echo "Test with Pytest..."
+                sh label: '', script: "pytest pytest/app-tests/test_request.py"
           }
         }
 
