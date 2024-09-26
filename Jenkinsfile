@@ -49,14 +49,18 @@ pipeline {
         }
 
         stage('Code Quality Analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner-6.2.0.4584';
+            }
            steps {
                 echo "Code Quality with SonarQube..."
                 withSonarQubeEnv(installationName: 'sit753-sonar') {
-                    sh 'mvn sonar:sonar'
+                    // sh 'mvn clean package sonar:sonar'
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
             options {
-                timeout(time: 2, unit: 'MINUTES')
+                timeout(time: 10, unit: 'MINUTES')
             }
         }
 
