@@ -67,19 +67,25 @@ pipeline {
                 script {
                     // Push to AWS ECR
                     docker.withRegistry("${ECR_REPOSITORY}", "ecr:${AWS_DEFAULT_REGION}:aws-credentials") {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
 
+        stage('Deploy - Push to AWS Elastic Beanstalk') {
+            steps {
+                script {
                     // Deploy to AWS Elastic Beanstalk
                     sh "zip -r deployment-package.zip Docker.aws.json"
-                    
+
                     
                     // Create a new application version and update the environment
                     withAWS(credentials: 'aws-credentials', region: "${AWS_DEFAULT_REGION}") {
                         sh "aws s3 cp deployment-package.zip s3://${S3_BUCKET}/${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
                         sh "aws elasticbeanstalk create-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket=${S3_BUCKET},S3Key=${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
                         sh "aws elasticbeanstalk update-environment --application-name ${EB_APPLICATION_NAME} --environment-name ${EB_ENVIRONMENT_NAME} --version-label ${IMAGE_TAG}"
-                        }
                     }
                 }
             }
