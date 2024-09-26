@@ -55,8 +55,8 @@ pipeline {
            steps {
                 echo "Code Quality with SonarQube..."
                 withSonarQubeEnv(installationName: 'sit753-sonar') {
-                    sh 'mvn clean package sonar:sonar'
-                    // sh "${scannerHome}/bin/sonar-scanner"
+                    // sh 'mvn clean package sonar:sonar'
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
             options {
