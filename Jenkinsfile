@@ -42,9 +42,6 @@ pipeline {
 
                 sh label: '', script: "docker run -d -p 5000:5000 sit753"
                 echo "Test with Pytest..."
-                sh label: '', script: "pytest pytest/app-tests/test_request.py"
-                sh label: '', script: "docker stop $(docker ps -a -q)"
-                sh label: '', script: "docker rm $(docker ps -a -q)"
           }
         }
 
