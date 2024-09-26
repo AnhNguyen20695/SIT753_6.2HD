@@ -52,7 +52,7 @@ pipeline {
            steps {
                 echo "Code Quality with SonarQube..."
                 withSonarQubeEnv(installationName: 'sit753-sonar') {
-                    sh 'mvn clean package sonar:sonar'
+                    sh 'mvn sonar:sonar'
                 }
             }
             options {
