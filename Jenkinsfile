@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     // Deploy to AWS Elastic Beanstalk
-                    sh "zip -r deployment-package.zip Docker.aws.json"
+                    sh "zip -r deployment-package.zip Dockerrun.aws.json"
                     
                     // Create a new application version and update the environment
                     withAWS(credentials: 'aws-credentials', region: "${AWS_DEFAULT_REGION}") {
