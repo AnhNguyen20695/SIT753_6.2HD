@@ -52,16 +52,6 @@ pipeline {
           }
         }
 
-        // stage('Deploy') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry( '277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753', 'ecr:ap-southeast-2:aws-credentials' ) {
-        //                 dockerImage.push("${env.BUILD_NUMBER}")
-        //                 dockerImage.push("latest")
-        //             }
-        //         }
-        //     }
-        // }
         stage('Deploy - Push to ECR') {
             steps {
                 script {
