@@ -32,7 +32,7 @@ pipeline {
 	    stage('Build') {
             steps {
                 script {
-                    app = docker.build("underwater")
+                    app = docker.build("sit753")
                 }
             }
         }
