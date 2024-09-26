@@ -41,7 +41,7 @@ pipeline {
            steps {
 
                 sh label: '', script: "docker run -d --name test-stage -p 5000:5000 sit753"
-                echo "Test with Pytest..."
+                echo "Test with Pytest.."
                 sh "pytest pytest/app-tests/test_request.py"
                 sh returnStatus: true, script: 'docker stop test-stage'
                 sh returnStatus: true, script: 'docker rm test-stage'
