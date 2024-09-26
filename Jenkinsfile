@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'ap-southeast-2'
         AWS_ACCOUNT_ID = '277707121057'
-        ECR_REPOSITORY = '277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753'
+        ECR_REPOSITORY = 'https://277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753'
         IMAGE_TAG = "latest" // Or use a dynamic tag based on build number or git commit
         EB_APPLICATION_NAME = 'sit753-s222521972-server'
         EB_ENVIRONMENT_NAME = 'sit753-s222521972-server-env'
@@ -32,7 +32,7 @@ pipeline {
 	    stage('Build') {
             steps {
                 script {
-                    app = docker.build("${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}")
+                    app = docker.build("underwater")
                 }
             }
         }
