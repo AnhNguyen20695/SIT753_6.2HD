@@ -54,10 +54,12 @@ pipeline {
             // }
            steps {
                 echo "Code Quality with SonarQube..."
+                def scannerHome = tool 'SonarQubeScanner-6.2.0.4584';
                 withSonarQubeEnv(installationName: 'sit753-sonar') {
                     // sh 'mvn clean package sonar:sonar'
-                    println ${env.SONAR_HOST_URL}
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                    println "${env.SONAR_HOST_URL}"
+                    // sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
             options {
