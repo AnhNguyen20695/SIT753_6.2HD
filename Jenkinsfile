@@ -6,8 +6,8 @@ pipeline {
         AWS_ACCOUNT_ID = '277707121057'
         ECR_REPOSITORY = 'https://277707121057.dkr.ecr.ap-southeast-2.amazonaws.com/sit753'
         IMAGE_TAG = "latest" // Or use a dynamic tag based on build number or git commit
-        EB_APPLICATION_NAME = 'sit753-s222521972-server'
-        EB_ENVIRONMENT_NAME = 'sit753-s222521972-server-env'
+        EB_APPLICATION_NAME = 'sit753-s222521972-test-server'
+        EB_ENVIRONMENT_NAME = 'sit753-s222521972-test-server-env'
         S3_BUCKET = 'elasticbeanstalk-ap-southeast-2-277707121057'
     }
     options {
