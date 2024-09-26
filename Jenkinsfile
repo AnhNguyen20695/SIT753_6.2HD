@@ -42,6 +42,8 @@ pipeline {
 
                 sh label: '', script: "docker run -d -p 5000:5000 sit753"
                 echo "Test with Pytest..."
+                sh "pytest pytest/app-tests/test_request.py"
+                sh returnStatus: true, script: 'docker stop $(docker ps -a | grep ${JOB_NAME} | awk \'{print $1}\')'
           }
         }
 
@@ -52,10 +54,12 @@ pipeline {
                     sh 'mvn clean package sonar:sonar'
                 }
             }
-            timeout(time: 2, unit: 'MINUTES'){
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            options {
+                timeout(time: 2, unit: 'MINUTES'){
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
                 }
             }
         }
