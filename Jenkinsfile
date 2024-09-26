@@ -17,6 +17,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Clean before build
+                cleanWs()
                 git branch: 'main', url: 'https://github.com/AnhNguyen20695/SIT753_6.2HD.git'
             }
         }
@@ -97,20 +99,31 @@ pipeline {
             }
         }
 
-        stage('Release - Push to AWS CodeDeploy') {
-            steps {
-                script {
-                    // Deploy to AWS CodeDeploy
-                    echo "Latest commit ID is ${env.GIT_COMMIT}"
+        // stage('Release - Push to AWS CodeDeploy') {
+        //     steps {
+        //         script {
+        //             // Deploy to AWS CodeDeploy
+        //             echo "Latest commit ID is ${env.GIT_COMMIT}"
                     
-                    // Create a new application version and update the environment
-                    // withAWS(credentials: 'aws-credentials', region: "${AWS_DEFAULT_REGION}") {
-                    //     sh "aws s3 cp deployment-package.zip s3://${S3_BUCKET}/${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
-                    //     sh "aws elasticbeanstalk delete-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG}"
-                    //     sh "aws elasticbeanstalk create-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket=${S3_BUCKET},S3Key=${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
-                    //     sh "aws elasticbeanstalk update-environment --application-name ${EB_APPLICATION_NAME} --environment-name ${EB_ENVIRONMENT_NAME} --version-label ${IMAGE_TAG}"
-                    // }
-                }
+        //             // Create a new application version and update the environment
+        //             // withAWS(credentials: 'aws-credentials', region: "${AWS_DEFAULT_REGION}") {
+        //             //     sh "aws s3 cp deployment-package.zip s3://${S3_BUCKET}/${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
+        //             //     sh "aws elasticbeanstalk delete-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG}"
+        //             //     sh "aws elasticbeanstalk create-application-version --application-name ${EB_APPLICATION_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket=${S3_BUCKET},S3Key=${EB_APPLICATION_NAME}-${IMAGE_TAG}.zip"
+        //             //     sh "aws elasticbeanstalk update-environment --application-name ${EB_APPLICATION_NAME} --environment-name ${EB_ENVIRONMENT_NAME} --version-label ${IMAGE_TAG}"
+        //             // }
+        //         }
+        //     }
+        // }
+        post {
+            // Clean after build
+            always {
+                cleanWs(cleanWhenNotBuilt: false,
+                        deleteDirs: true,
+                        disableDeferredWipeout: true,
+                        notFailBuild: true,
+                        patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                                [pattern: '.propsfile', type: 'EXCLUDE']])
             }
         }
     }
