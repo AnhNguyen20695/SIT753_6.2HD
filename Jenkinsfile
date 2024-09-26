@@ -50,7 +50,7 @@ pipeline {
 
         stage('Code Quality Analysis') {
             environment {
-                scannerHome = tool 'SonarQubeScanner-6.2.0.4584';
+                scannerHome = tool 'sonarscanner';
             }
            steps {
                 echo "Code Quality with SonarQube..."
